@@ -4,6 +4,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;  
 use App\Http\Controllers\RequestInAdvanceController;
+use App\Http\Controllers\MissionReportController;
+
+
+{/*Mission Report */}
+Route::get('/mission-report', [MissionReportController::class, 'index']); 
+Route::get('/mission-report/{id}', [MissionReportController::class, 'show']); 
+Route::post('/mission-report', [MissionReportController::class, 'store']);
+Route::put('/mission-report/{id}', [MissionReportController::class, 'update']); 
+Route::delete('/mission-report/{id}', [MissionReportController::class, 'destroy']); 
+
 
 {/* Request in advance*/}
 Route::post('/request-in-advances', [RequestInAdvanceController::class, 'store']);

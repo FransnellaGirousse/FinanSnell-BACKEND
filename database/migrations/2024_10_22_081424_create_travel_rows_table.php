@@ -9,21 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+   public function up(): void
+{
+    if (!Schema::hasTable('travel_rows')) {
         Schema::create('travel_rows', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_in_advance_id')->constrained('request_in_advances')->onDelete('cascade'); // Clé étrangère
-
+            $table->foreignId('request_in_advance_id')->constrained('request_in_advances')->onDelete('cascade');
             $table->string('location');
             $table->string('per_diem_rate');
             $table->string('percentage_of_advance_required');
             $table->string('number_of_days');
             $table->string('total_amount');
             $table->timestamps();
-
         });
     }
+}
+
 
     /**
      * Reverse the migrations.
