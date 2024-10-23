@@ -5,6 +5,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;  
 use App\Http\Controllers\RequestInAdvanceController;
 use App\Http\Controllers\MissionReportController;
+use App\Http\Controllers\TdrMissionController;
+
+
+
+{/* Mission Tdr */}
+Route::get('/create-tdr', [TdrMissionController::class, 'index']);
+Route::get('/create-tdr/{id}', [TdrMissionController::class, 'show']);
+Route::post('/create-tdr', [TdrMissionController::class, 'store']);
+Route::put('/create-tdr/{id}', [TdrMissionController::class, 'update']);
+Route::delete('/create-tdr/{id}', [TdrMissionController::class, 'destroy']);
 
 
 {/*Mission Report */}
