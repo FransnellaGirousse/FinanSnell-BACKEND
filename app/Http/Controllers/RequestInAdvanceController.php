@@ -32,7 +32,6 @@ class RequestInAdvanceController extends Controller
             'branch' => 'required|string',
             'name' => 'required|string',
             'account_number' => 'required|string',
-            'signature' => 'nullable|string',
             'rows' => 'required|array', 
             'rows.*.location' => 'required|string',
             'rows.*.per_diem_rate' => 'required|string',

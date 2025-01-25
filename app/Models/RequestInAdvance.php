@@ -31,7 +31,6 @@ class RequestInAdvance extends Model
         'branch',
         'name',
         'account_number',
-        'signature',
     ];
 
     public function rows()

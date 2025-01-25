@@ -68,4 +68,21 @@ class RegisterController extends Controller
             'token' => $token,
         ]);
     }
+
+    public function getRole(Request $request)
+{
+    $user = $request->user();  // Utilise l'utilisateur authentifié
+
+    // Retourner le rôle de l'utilisateur
+    return response()->json(['role' => $user->role]);  // Si tu utilises Spatie Laravel-Permission, tu pourrais faire : $user->getRoleNames()
+}
+
+public function getEmail(Request $request)
+{
+    $user = $request->user();  // Utilise l'utilisateur authentifié
+
+    // Retourner l'email de l'utilisateur
+    return response()->json(['email' => $user->email]);
+}
+
 }

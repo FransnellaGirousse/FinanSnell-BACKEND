@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('create_tdr', function (Blueprint $table) {
             $table->id();
-            $table->string('mission_title');
             $table->text('introduction');
             $table->text('mission_objectives');
             $table->text('planned_activities');

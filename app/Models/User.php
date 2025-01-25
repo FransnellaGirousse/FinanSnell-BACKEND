@@ -63,4 +63,10 @@ class User extends Authenticatable
    
         return $this->image ? $this->image : 'https://www.w3schools.com/howto/img_avatar.png'; 
     }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
 }

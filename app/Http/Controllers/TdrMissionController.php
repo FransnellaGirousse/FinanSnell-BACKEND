@@ -16,7 +16,6 @@ class TdrMissionController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'mission_title' => 'required|string|max:255',
             'introduction' => 'required|string',
             'mission_objectives' => 'required|string',
             'planned_activities' => 'required|string',
@@ -49,7 +48,6 @@ class TdrMissionController extends Controller
         }
 
         $validatedData = $request->validate([
-            'mission_title' => 'sometimes|required|string|max:255',
             'introduction' => 'sometimes|required|string',
             'mission_objectives' => 'sometimes|required|string',
             'planned_activities' => 'sometimes|required|string',
