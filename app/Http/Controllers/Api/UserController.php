@@ -46,16 +46,13 @@ class UserController extends Controller
     /**
      * Recherche les utilisateurs en fonction du rôle spécifié
      */
-    public function getUsersByRole(Request $request)
-    {
-        // Validation du rôle passé dans la requête
-        $request->validate([
-            'role' => 'required|string',
-        ]);
+    public function getRole(Request $request)
+{
+    $user = $request->user();  // Utilise l'utilisateur authentifié
 
-        // Recherche des utilisateurs ayant le rôle spécifié
-        $users = User::role($request->role)->get();
-        // Retourner les utilisateurs avec ce rôle
-        return response()->json(['users' => $users]);
-    }
+    // Retourner le rôle de l'utilisateur
+    return response()->json(['role' => $user->role]);  // Si tu utilises Spatie Laravel-Permission, tu pourrais faire : $user->getRoleNames()
+}
+
+
 }

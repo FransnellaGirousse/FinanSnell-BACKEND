@@ -1,46 +1,43 @@
-<?php  
+<?php
 
-namespace App\Http\Controllers;  
+namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;  
-use App\Models\User;  
-use Illuminate\Support\Facades\Auth;  
-use Laravel\Socialite\Facades\Socialite;  
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
-class AuthController extends Controller  
-{  
-    // Redirection vers Google OAuth  
-    public function redirectToGoogle()  
-    {  
-        return Socialite::driver('google')->redirect();  
-    }  
+class AuthController extends Controller
+{
+    public function loginWithGoogle(Request $request)
+    {
+        $googleUser = $request->user; // Supposons que vous recevez un utilisateur Google avec ces informations
 
-    // Callback après l'authentification  
-    public function handleGoogleCallback(Request $request)  
-    {  
-        $user = Socialite::driver('google')->user();  
-        
-        // Création ou récupération de l'utilisateur  
-        $authUser = User::firstOrCreate([  
-            'google_id' => $user->id,  
-        ], [  
-            'name' => $user->name,  
-            'email' => $user->email,  
-        ]);  
+        // Vérifier si l'utilisateur existe en fonction de son google_id ou email
+        $user = User::where('google_id', $googleUser->id)->orWhere('email', $googleUser->email)->first();
 
-        // Authentifier l'utilisateur  
-        Auth::login($authUser, true);  
-        
-        // Vous pourriez aussi renvoyer un token ou rediriger ailleurs  
-        return response()->json($authUser);  
-    }  
+        if (!$user) {
+            // Si l'utilisateur n'existe pas, créez-le avec les informations de Google
+            $user = User::create([
+                'firstname' => $googleUser->given_name,
+                'lastname' => $googleUser->family_name,
+                'email' => $googleUser->email,
+                'google_id' => $googleUser->id,
+                'image' => $googleUser->picture,
+                'role' => 'user', // Attribuez un rôle par défaut, ou ce que vous souhaitez
+            ]);
+        }
 
-    // Méthode de déconnexion  
-    public function logout()  
-    {  
-        Auth::logout();  
-        return response()->json(['message' => 'Déconnecté avec succès']);  
-    }  
+        // Connecter l'utilisateur via Sanctum (ou Laravel Passport)
+        Auth::login($user);
 
-    // Autres méthodes d'authentification peuvent aussi être ajoutées ici  
+        // Vous pouvez aussi retourner un token JWT si vous utilisez JWT
+        $token = $user->createToken('YourApp')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login successful',
+            'token' => $token,
+            'user' => $user
+        ]);
+    }
 }

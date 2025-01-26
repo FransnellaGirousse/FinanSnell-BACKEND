@@ -11,6 +11,18 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\UserController;
 
 
+
+// Route pour récupérer les données utilisateur (y compris le rôle)
+Route::middleware('auth:sanctum')->get('/user-data', [RegisterController::class, 'getUserData']);
+
+// Route pour récupérer uniquement le rôle
+Route::middleware('auth:sanctum')->get('/role', [RegisterController::class, 'getRole']);
+
+// Route pour récupérer l'email
+Route::middleware('auth:sanctum')->get('/email', [RegisterController::class, 'getEmail']);
+
+
+
 Route::middleware('auth:sanctum')->get('/get-role', [AccountController::class, 'getRole']);
 Route::middleware('auth:sanctum')->get('/get-email', [RegisterController::class, 'getEmail']);
 
@@ -79,8 +91,13 @@ Route::get('/request-in-advances/{id}', [RequestInAdvanceController::class, 'sho
 Route::put('/request-in-advances/{id}', [RequestInAdvanceController::class, 'update']); 
 Route::delete('/request-in-advances/{id}', [RequestInAdvanceController::class, 'destroy']);
 
+
+
+
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [RegisterController::class, 'login']);
+Route::middleware('auth:sanctum')->get('/user', [RegisterController::class, 'getUserData']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -90,3 +107,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::post('register/google', [AccountController::class, 'store']);
+Route::post('/register/google', [AccountController::class, 'registerGoogleUser']);  // Pour l'enregistrement via Google
+Route::get('/role', [AccountController::class, 'getRole']);  // Pour obtenir le rôle de l'utilisateur
+

@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller  
 {  
+    // Méthode d'enregistrement d'un utilisateur
     public function register(Request $request)  
     {  
-        // Data validation  
+        // Validation des données envoyées
         $validator = Validator::make($request->all(), [  
             'firstname' => 'required|string|max:255',  
             'lastname' => 'required|string|max:255',  
@@ -29,7 +30,7 @@ class RegisterController extends Controller
             ], 200);  
         }  
 
-        // Create user with the assigned role  
+        // Création de l'utilisateur avec le rôle
         $user = User::create([  
             'firstname' => $request->firstname, 
             'lastname' => $request->lastname,  
@@ -39,13 +40,15 @@ class RegisterController extends Controller
             'role' => $request->role,  
         ]);  
 
+        // Retourner une réponse avec les données de l'utilisateur
         return response()->json([  
             'success' => true,  
             'message' => 'Utilisateur créé avec succès',  
             'user' => $user,  
         ], 201);  
     } 
-    
+
+    // Méthode de connexion de l'utilisateur
     public function login(Request $request)
     {
         $request->validate([
@@ -53,36 +56,53 @@ class RegisterController extends Controller
             'password' => 'required|string',
         ]);
 
+        // Recherche de l'utilisateur par son email
         $user = User::where('email', $request->email)->first();
 
+        // Vérification du mot de passe
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'Email ou mot de passe incorrect'
             ], 401);
         }
 
+        // Création du token pour l'utilisateur
         $token = $user->createToken('API Token')->plainTextToken;
 
+        // Retourne les données de l'utilisateur, y compris le token
         return response()->json([
             'user' => $user,
             'token' => $token,
         ]);
     }
 
+    // Récupère les données complètes de l'utilisateur (dont le rôle)
+    public function getUserData(Request $request)
+    {
+        $user = $request->user(); // Utilise l'utilisateur authentifié via Sanctum
+
+        // Retourne toutes les données utilisateur, y compris le rôle
+        return response()->json([
+            'user' => $user,
+            'role' => $user->role, // Renvoie également le rôle de l'utilisateur
+        ]);
+    }
+
+    // Méthode pour récupérer uniquement le rôle de l'utilisateur
     public function getRole(Request $request)
-{
-    $user = $request->user();  // Utilise l'utilisateur authentifié
+    {
+        $user = $request->user();  // Utilise l'utilisateur authentifié
 
-    // Retourner le rôle de l'utilisateur
-    return response()->json(['role' => $user->role]);  // Si tu utilises Spatie Laravel-Permission, tu pourrais faire : $user->getRoleNames()
-}
+        // Retourne uniquement le rôle de l'utilisateur
+        return response()->json(['role' => $user->role]);
+    }
 
-public function getEmail(Request $request)
-{
-    $user = $request->user();  // Utilise l'utilisateur authentifié
+    // Méthode pour récupérer l'email de l'utilisateur
+    public function getEmail(Request $request)
+    {
+        $user = $request->user();  // Utilise l'utilisateur authentifié
 
-    // Retourner l'email de l'utilisateur
-    return response()->json(['email' => $user->email]);
-}
-
+        // Retourne l'email de l'utilisateur
+        return response()->json(['email' => $user->email]);
+    }
 }
