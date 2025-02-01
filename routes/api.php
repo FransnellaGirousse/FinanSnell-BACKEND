@@ -9,6 +9,29 @@ use App\Http\Controllers\TdrMissionController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\AssignmentOMController;
+use App\Http\Controllers\MissionDetailController;
+
+
+{/* Mission OM */}
+Route::prefix('assignment-oms')->group(function () {
+    Route::get('/', [AssignmentOMController::class, 'index']); // Afficher toutes les missions
+    Route::get('{id}', [AssignmentOMController::class, 'show']); // Afficher une mission spécifique
+    Route::post('/', [AssignmentOMController::class, 'store']); // Créer une nouvelle mission
+    Route::put('{id}', [AssignmentOMController::class, 'update']); // Mettre à jour une mission
+    Route::delete('{id}', [AssignmentOMController::class, 'destroy']); // Supprimer une mission
+});
+
+
+{/* Mission OM tableau */}
+Route::prefix('mission-details')->group(function () {
+    Route::get('/', [MissionDetailController::class, 'index']); // Afficher tous les détails de mission
+    Route::get('{id}', [MissionDetailController::class, 'show']); // Afficher un détail de mission spécifique
+    Route::post('/', [MissionDetailController::class, 'store']); // Créer un nouveau détail de mission
+    Route::put('{id}', [MissionDetailController::class, 'update']); // Mettre à jour un détail de mission
+    Route::delete('{id}', [MissionDetailController::class, 'destroy']); // Supprimer un détail de mission
+});
+
 
 
 

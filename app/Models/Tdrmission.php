@@ -12,10 +12,17 @@ class Tdrmission extends Model
      protected $table = 'create_tdr';
 
     protected $fillable = [
+        'date_tdr',
+        'traveler',
+        'mission_title',
         'introduction',
         'mission_objectives',
         'planned_activities',
         'necessary_resources',
         'conclusion'
     ];
+    public function assignments()
+    {
+        return $this->hasMany(AssignmentOM::class);
+    }
 }

@@ -16,6 +16,9 @@ class TdrMissionController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
+            'date_tdr' => 'required|date',
+            'traveler' => 'required|string|max:255',
+            'mission_title' => 'required|string|max:255',
             'introduction' => 'required|string',
             'mission_objectives' => 'required|string',
             'planned_activities' => 'required|string',
@@ -48,12 +51,17 @@ class TdrMissionController extends Controller
         }
 
         $validatedData = $request->validate([
+            'date_tdr' => 'required|date',
+            'traveler' => 'required|string|max:255',
+            'mission_title' => 'required|string|max:255',
             'introduction' => 'sometimes|required|string',
             'mission_objectives' => 'sometimes|required|string',
             'planned_activities' => 'sometimes|required|string',
             'necessary_resources' => 'sometimes|required|string',
             'conclusion' => 'sometimes|required|string',
         ]);
+
+      
 
         $mission->update($validatedData);
 
@@ -72,4 +80,8 @@ class TdrMissionController extends Controller
 
         return response()->json(['message' => 'Mission deleted'], 200);
     }
+
+
+    
 }
+
