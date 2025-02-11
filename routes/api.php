@@ -35,19 +35,19 @@ Route::prefix('mission-details')->group(function () {
 
 
 
-// Route pour récupérer les données utilisateur (y compris le rôle)
-Route::middleware('auth:sanctum')->get('/user-data', [RegisterController::class, 'getUserData']);
+// // Route pour récupérer les données utilisateur (y compris le rôle)
+// Route::middleware('auth:sanctum')->get('/user-data', [RegisterController::class, 'getUserData']);
 
-// Route pour récupérer uniquement le rôle
-Route::middleware('auth:sanctum')->get('/role', [RegisterController::class, 'getRole']);
+// // Route pour récupérer uniquement le rôle
+// Route::middleware('auth:sanctum')->get('/role', [RegisterController::class, 'getRole']);
 
-// Route pour récupérer l'email
-Route::middleware('auth:sanctum')->get('/email', [RegisterController::class, 'getEmail']);
+// // Route pour récupérer l'email
+// Route::middleware('auth:sanctum')->get('/email', [RegisterController::class, 'getEmail']);
 
 
 
-Route::middleware('auth:sanctum')->get('/get-role', [AccountController::class, 'getRole']);
-Route::middleware('auth:sanctum')->get('/get-email', [RegisterController::class, 'getEmail']);
+// Route::middleware('auth:sanctum')->get('/get-role', [AccountController::class, 'getRole']);
+// Route::middleware('auth:sanctum')->get('/get-email', [RegisterController::class, 'getEmail']);
 
 
 Route::post('/accounts', [AccountController::class, 'store']);
@@ -61,21 +61,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 
-Route::post('/get-user-info', function (Request $request) {
-    // Récupère l'utilisateur connecté via la session
-    $user = $request->user(); // Utilise le middleware d'authentification pour récupérer l'utilisateur authentifié
+// Route::post('/get-user-info', function (Request $request) {
+//     // Récupère l'utilisateur connecté via la session
+//     $user = $request->user(); // Utilise le middleware d'authentification pour récupérer l'utilisateur authentifié
 
-    if ($user) {
-        // Si un utilisateur est connecté, retourne son email et son rôle
-        return response()->json([
-            'email' => $user->email,
-            'role' => $user->role,  // Assure-toi que le rôle de l'utilisateur est stocké dans la colonne `role` de la table `users`
-        ]);
-    }
+//     if ($user) {
+//         // Si un utilisateur est connecté, retourne son email et son rôle
+//         return response()->json([
+//             'email' => $user->email,
+//             'role' => $user->role,  // Assure-toi que le rôle de l'utilisateur est stocké dans la colonne `role` de la table `users`
+//         ]);
+//     }
 
-    // Si l'utilisateur n'est pas trouvé ou n'est pas connecté, retourne une erreur
-    return response()->json(['error' => 'Utilisateur non trouvé'], 404);
-});
+//     // Si l'utilisateur n'est pas trouvé ou n'est pas connecté, retourne une erreur
+//     return response()->json(['error' => 'Utilisateur non trouvé'], 404);
+// });
 
 
 Route::post('/check-and-add-user', [UserController::class, 'checkAndAddUser']);

@@ -24,7 +24,7 @@ class AuthController extends Controller
                 'email' => $googleUser->email,
                 'google_id' => $googleUser->id,
                 'image' => $googleUser->picture,
-                'role' => 'user', // Attribuez un rôle par défaut, ou ce que vous souhaitez
+                'role' => 'user', 
             ]);
         }
 
