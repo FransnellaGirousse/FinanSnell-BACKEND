@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User; 
 use Illuminate\Http\Request;  
 use Illuminate\Support\Facades\Hash;  
-use Illuminate\Support\Facades\Validator;  
+use Illuminate\Support\Facades\Validator; 
+
 
 class RegisterController extends Controller  
 {  
@@ -104,6 +105,11 @@ class RegisterController extends Controller
 
         // Retourne l'email de l'utilisateur
         return response()->json(['email' => $user->email]);
+    }
+    // Récupérer tous les utilisateurs
+    public function getUsers()
+    {
+        return response()->json(User::all(), 200);
     }
 
      

@@ -119,6 +119,8 @@ Route::delete('/request-in-advances/{id}', [RequestInAdvanceController::class, '
 
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [RegisterController::class, 'login']);
+Route::get('/users', [RegisterController::class, 'getUsers']);
+
 Route::middleware('auth:sanctum')->get('/user', [RegisterController::class, 'getUserData']);
 
 
