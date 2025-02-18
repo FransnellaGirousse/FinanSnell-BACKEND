@@ -105,4 +105,6 @@ class RegisterController extends Controller
         // Retourne l'email de l'utilisateur
         return response()->json(['email' => $user->email]);
     }
+
+     
 }
