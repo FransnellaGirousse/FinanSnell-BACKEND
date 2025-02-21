@@ -13,6 +13,14 @@ use App\Http\Controllers\AssignmentOMController;
 use App\Http\Controllers\MissionDetailController;
 
 
+
+Route::post('/accounts', [AccountController::class, 'store']); // Créer un compte
+Route::put('/users/{id}/account', [AccountController::class, 'update']); // Mettre à jour un compte via user_id
+Route::get('/users/{id}/account', [AccountController::class, 'show']); // Récupérer un compte via user_id
+
+
+
+
 {/* Mission OM */}
 Route::prefix('assignment-oms')->group(function () {
     Route::get('/', [AssignmentOMController::class, 'index']); // Afficher toutes les missions
@@ -34,27 +42,7 @@ Route::prefix('mission-details')->group(function () {
 
 
 
-
-// // Route pour récupérer les données utilisateur (y compris le rôle)
-// Route::middleware('auth:sanctum')->get('/user-data', [RegisterController::class, 'getUserData']);
-
-// // Route pour récupérer uniquement le rôle
-// Route::middleware('auth:sanctum')->get('/role', [RegisterController::class, 'getRole']);
-
-// // Route pour récupérer l'email
-// Route::middleware('auth:sanctum')->get('/email', [RegisterController::class, 'getEmail']);
-
-
-
-// Route::middleware('auth:sanctum')->get('/get-role', [AccountController::class, 'getRole']);
-// Route::middleware('auth:sanctum')->get('/get-email', [RegisterController::class, 'getEmail']);
-
-
-Route::post('/accounts', [AccountController::class, 'store']);
-
-
 // routes/api.php
-
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

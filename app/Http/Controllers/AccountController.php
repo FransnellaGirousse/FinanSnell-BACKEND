@@ -2,75 +2,102 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Account;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    // Méthode pour gérer l'enregistrement classique des utilisateurs
+    /**
+     * Afficher tous les comptes
+     */
+    public function index()
+    {
+        return response()->json(Account::all());
+    }
+
+    /**
+     * Créer un nouveau compte
+     */
     public function store(Request $request)
     {
-        // Valider les données reçues
         $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone_number' => 'nullable|string|max:15',
+            'email' => 'required|email|unique:accounts,email',
             'role' => 'required|string|in:user,visitor,administrator,accountant,director',
+            'phone_number' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
         ]);
 
-        // Créer un nouvel utilisateur dans la base de données
-        try {
-            $user = User::create([
-                'firstname' => $validated['firstname'],
-                'lastname' => $validated['lastname'],
-                'email' => $validated['email'],
-                'phone_number' => $validated['phone_number'],
-                'role' => $validated['role'],
-                'address' => $validated['address'],
-                'password' => '', // Ajouter un mot de passe vide
-            ]);
+        $account = Account::create($validated);
 
-            return response()->json(['message' => 'Compte créé avec succès !', 'user' => $user ,  'roles' => $user->getRoleNames()], 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Erreur lors de la création du compte', 'details' => $e->getMessage()], 500);
-        }
+        return response()->json([
+            'message' => 'Compte créé avec succès !',
+            'account' => $account
+        ], 201);
     }
 
-    // Méthode pour gérer l'enregistrement des utilisateurs via Google
-    public function registerGoogleUser(Request $request)
+    /**
+     * Afficher un compte spécifique
+     */
+    public function show($userId)
     {
-        // Vérifiez si l'utilisateur existe déjà avec son Google ID
-        $user = User::where('google_id', $request->google_id)->first();
 
-        if (!$user) {
-            // Si l'utilisateur n'existe pas, enregistrez-le
-            $user = User::create([
-                'email' => $request->email,
-                'name' => $request->name,
-                'google_id' => $request->google_id,
-                'image' => $request->image,
-                // Vous pouvez ajouter d'autres champs comme "role" si nécessaire
-            ]);
-        } else {
-            // Si l'utilisateur existe déjà, vous pouvez mettre à jour ses informations si nécessaire
-            $user->update([
-                'name' => $request->name,
-                'image' => $request->image,
-            ]);
+        
+    $account = Account::where('user_id', $userId)->first();
+
+        if (!$account) {
+            return response()->json(['error' => 'Compte non trouvé'], 404);
         }
 
-        // Retourner les données de l'utilisateur, y compris son ID et son rôle
-        return response()->json(['id' => $user->id, 'email' => $user->email, 'role' => $user->role]);
+        return response()->json($account);
     }
 
-    // Méthode pour obtenir le rôle d'un utilisateur
-    public function getRole(Request $request)
+    /**
+     * Mettre à jour un compte
+     */
+    public function update(Request $request, $userId)
     {
-        $user = $request->user();  
+        $account = Account::where('user_id', $userId)->first();
+        if (!$account) {
+        return response()->json(['error' => 'Compte non trouvé'], 404);
 
-        // Retourner le rôle de l'utilisateur
-        return response()->json(['role' => $user->role]);  // Si tu utilises Spatie Laravel-Permission, tu pourrais faire : $user->getRoleNames()
+        if (!$account) {
+            return response()->json(['error' => 'Compte non trouvé'], 404);
+        }
+
+        $validated = $request->validate([
+            'firstname' => 'sometimes|string|max:255',
+            'lastname' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:accounts,email,' . $id,
+            'role' => 'sometimes|string|in:user,visitor,administrator,accountant,director',
+            'phone_number' => 'nullable|string|max:15',
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        $account->update($validated);
+
+        return response()->json([
+            'message' => 'Compte mis à jour avec succès !',
+            'account' => $account
+        ], 200);
+    }
+    }
+
+    /**
+     * Supprimer un compte
+     */
+    public function destroy($id)
+    {
+        $account = Account::find($id);
+
+        if (!$account) {
+            return response()->json(['error' => 'Compte non trouvé'], 404);
+        }
+
+        $account->delete();
+
+        return response()->json(['message' => 'Compte supprimé avec succès !'], 200);
     }
 }

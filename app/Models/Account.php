@@ -10,6 +10,15 @@ class Account extends Model
     use HasFactory;
 
     protected $fillable = [
-        'firstname', 'lastname', 'email', 'phone_number', 'role', 'address'
+        'firstname', 'lastname', 'email', 'role', 'phone_number', 'address',
     ];
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
 }
+
+}
+
+
+

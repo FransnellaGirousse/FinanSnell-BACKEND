@@ -14,45 +14,45 @@ class UserController extends Controller
      */
     public function checkAndAddUser(Request $request)
     {
-        // Validation de l'email passé dans la requête
+        // Validation de l'email dans la requête
         $request->validate([
             'email' => 'required|email',
+            'firstname' => 'nullable|string|max:255', // Optionnel
+            'lastname' => 'nullable|string|max:255',  // Optionnel
         ]);
 
-        // Recherche de l'utilisateur par son email
+        // Vérifier si l'utilisateur existe déjà
         $user = User::where('email', $request->email)->first();
 
-        // Si l'utilisateur n'existe pas, on le crée
+        // Si l'utilisateur n'existe pas, on l'insère
         if (!$user) {
             $user = User::create([
                 'email' => $request->email,
-                'name' => 'Utilisateur ' . $request->email,
+                'firstname' => $request->firstname ?? 'Utilisateur', // Nom par défaut
+                'lastname' => $request->lastname ?? 'Inconnu',        // Nom par défaut
             ]);
         }
 
-        // Vérifier si l'utilisateur a déjà un rôle
-        // S'il n'a pas de rôle, on lui assigne un rôle par défaut
-        if ($user->roles->isEmpty()) {
-            // Vous pouvez assigner un rôle par défaut, comme 'user'
-            $user->assignRole('user');
-        }
-
-        // Retourner les rôles de l'utilisateur
-        $roles = $user->getRoleNames();
-
-        return response()->json(['roles' => $roles]);
+        // Retourner l'utilisateur et son rôle
+        return response()->json([
+            'user' => $user,
+        ], 200);
     }
 
     /**
-     * Recherche les utilisateurs en fonction du rôle spécifié
+     * Récupère le rôle de l'utilisateur authentifié
      */
     public function getRole(Request $request)
-{
-    $user = $request->user();  // Utilise l'utilisateur authentifié
+    {
+        $user = $request->user();  // Récupérer l'utilisateur connecté
 
-    // Retourner le rôle de l'utilisateur
-    return response()->json(['role' => $user->role]);  // Si tu utilises Spatie Laravel-Permission, tu pourrais faire : $user->getRoleNames()
-}
+        if (!$user) {
+            return response()->json(['error' => 'Utilisateur non authentifié'], 401);
+        }
 
-
+        // Retourne les rôles de l'utilisateur
+        return response()->json([
+            'roles' => $user->getRoleNames()
+        ]);
+    }
 }
