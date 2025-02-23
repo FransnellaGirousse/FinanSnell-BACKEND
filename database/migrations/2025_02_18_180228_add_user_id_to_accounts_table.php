@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::table('accounts', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Clé étrangère
-        });
+       Schema::table('accounts', function (Blueprint $table) {
+    if (!Schema::hasColumn('accounts', 'user_id')) {
+        $table->unsignedBigInteger('user_id');
+    }
+});
     }
 
     public function down()

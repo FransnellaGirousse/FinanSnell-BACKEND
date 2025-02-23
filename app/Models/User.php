@@ -70,9 +70,22 @@ class User extends Authenticatable
     }
 
     public function account()
-{
-    return $this->hasOne(Account::class);
-}
+    {
+        return $this->hasOne(Account::class);
+    }
+    protected static function booted() 
+    {
+        static::created(function($user) {
+             $user->account()->create([
+                'firstname'     => $user->firstname,  
+                'lastname'      => $user->lastname,
+                'email'         => $user->email,
+                'role'          => $user->role,
+                'phone_number'  => $user->phone_number,
+                'address'       => $user->address,
+             ]);
+        });
+    }
 
 
 }
