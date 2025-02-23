@@ -18,6 +18,7 @@ Route::post('/accounts', [AccountController::class, 'store']); // Créer un comp
 Route::put('/users/{id}/account', [AccountController::class, 'update']); // Mettre à jour un compte via user_id
 Route::get('/users/{id}/account', [AccountController::class, 'show']); // Récupérer un compte via user_id
 
+Route::post('/test-google-callback', [\App\Http\Controllers\AuthController::class, 'handleGoogleCallbackTest']);
 
 
 

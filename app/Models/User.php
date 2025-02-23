@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens; 
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Socialite\Facades\Socialite;
+
 
 
 class User extends Authenticatable
@@ -86,6 +88,34 @@ class User extends Authenticatable
              ]);
         });
     }
+    public function handleGoogleCallback()
+{
+    // Si vous utilisez stateless() car votre front gère l'authentification
+    $googleUser = Socialite::driver('google')->user();
 
+    $user = User::firstOrCreate(
+        ['email' => $googleUser->getEmail()],
+        [
+            // Ici, vous pouvez ajuster la récupération des informations depuis Google
+            'firstname' => $googleUser->getName(), // Vous pouvez séparer prénom et nom si besoin
+            'lastname'  => 'Inconnu',
+            'role'      => 'visiteur',
+        ]
+    );
+
+    // Vérifier si le compte associé existe, sinon le créer
+    if (!Account::where('email', $user->email)->exists()) {
+        $user->account()->create([
+            'firstname'    => $user->firstname,
+            'lastname'     => $user->lastname,
+            'email'        => $user->email,
+            'role'         => $user->role,
+            'phone_number' => $user->phone_number, 
+            'address'      => $user->address,      
+        ]);
+    }
+
+    // Suite de votre logique d'authentification (générer un token, rediriger, etc.)
+}
 
 }
