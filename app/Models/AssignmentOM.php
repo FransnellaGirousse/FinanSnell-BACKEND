@@ -10,8 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class AssignmentOM extends Model
 {
     use HasFactory;
-
-    // Spécifie les colonnes qui peuvent être remplies massivement (mass assignable)
+    protected $table = 'assignment_oms';
     protected $fillable = [
         'date',
         'traveler',

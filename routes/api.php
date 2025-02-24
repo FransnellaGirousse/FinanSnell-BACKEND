@@ -14,6 +14,15 @@ use App\Http\Controllers\MissionDetailController;
 
 
 
+Route::get('assignment_oms', [AssignmentOMController::class, 'index']);
+Route::get('assignment_oms/{id}', [AssignmentOMController::class, 'show']);
+Route::post('assignment_oms', [AssignmentOMController::class, 'store']);
+Route::put('assignment_oms/{id}', [AssignmentOMController::class, 'update']);
+Route::delete('assignment_oms/{id}', [AssignmentOMController::class, 'destroy']);
+
+
+
+
 Route::post('/accounts', [AccountController::class, 'store']); // Créer un compte
 Route::put('/users/{id}/account', [AccountController::class, 'update']); // Mettre à jour un compte via user_id
 Route::get('/users/{id}/account', [AccountController::class, 'show']); // Récupérer un compte via user_id
@@ -22,14 +31,14 @@ Route::post('/test-google-callback', [\App\Http\Controllers\AuthController::clas
 
 
 
-{/* Mission OM */}
-Route::prefix('assignment-oms')->group(function () {
-    Route::get('/', [AssignmentOMController::class, 'index']); // Afficher toutes les missions
-    Route::get('{id}', [AssignmentOMController::class, 'show']); // Afficher une mission spécifique
-    Route::post('/', [AssignmentOMController::class, 'store']); // Créer une nouvelle mission
-    Route::put('{id}', [AssignmentOMController::class, 'update']); // Mettre à jour une mission
-    Route::delete('{id}', [AssignmentOMController::class, 'destroy']); // Supprimer une mission
-});
+// {/* Mission OM */}
+// Route::prefix('assignment-oms')->group(function () {
+//     Route::get('/', [AssignmentOMController::class, 'index']); // Afficher toutes les missions
+//     Route::get('{id}', [AssignmentOMController::class, 'show']); // Afficher une mission spécifique
+//     Route::post('/', [AssignmentOMController::class, 'store']); // Créer une nouvelle mission
+//     Route::put('{id}', [AssignmentOMController::class, 'update']); // Mettre à jour une mission
+//     Route::delete('{id}', [AssignmentOMController::class, 'destroy']); // Supprimer une mission
+// });
 
 
 {/* Mission OM tableau */}
@@ -68,6 +77,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::post('/check-and-add-user', [UserController::class, 'checkAndAddUser']);
+Route::put('/users/{id}', [UserController::class, 'updateUserById']);
+
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
