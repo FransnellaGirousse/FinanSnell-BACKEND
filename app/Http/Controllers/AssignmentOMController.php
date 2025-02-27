@@ -9,17 +9,15 @@ use Illuminate\Http\Request;
 
 class AssignmentOMController extends Controller
 {
-    // Afficher tous les AssignmentOMs
     public function index()
     {
-        $assignments = AssignmentOM::all();  // Récupérer tous les AssignmentOMs
+        $assignments = AssignmentOM::all();  
         return response()->json($assignments);
     }
 
-    // Afficher un AssignmentOM spécifique
     public function show($id)
     {
-        $assignment = AssignmentOM::findOrFail($id);  // Trouver un AssignmentOM par ID
+        $assignment = AssignmentOM::findOrFail($id);  
         return response()->json($assignment);
     }
 
@@ -42,7 +40,7 @@ class AssignmentOMController extends Controller
             'date_hotel' => 'required|date',
             'other_details_hotel' => 'nullable|string',
             'other_logistical_requirments' => 'nullable|string',
-            'tdr_id' => 'required|exists:tdrs,id',  // Assure-toi que le TDR existe
+            'tdr_id' => 'required|exists:tdrs,id',
         ]);
 
         $assignment = AssignmentOM::create($validated);
@@ -84,5 +82,8 @@ class AssignmentOMController extends Controller
         $assignment->delete();
         return response()->json(['message' => 'AssignmentOM deleted successfully']);
     }
+
+
+
 }
 

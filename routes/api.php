@@ -11,14 +11,19 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AssignmentOMController;
 use App\Http\Controllers\MissionDetailController;
+use App\Http\Controllers\SuperAdminAuthController;
+
+Route::post('/superadmin/login', [SuperAdminAuthController::class, 'login']);
+Route::get('/create-superadmin', [SuperAdminAuthController::class, 'createAdmin']);
+Route::middleware('auth:sanctum')->post('/superadmin/logout', [SuperAdminAuthController::class, 'logout']);
 
 
 
-Route::get('assignment_oms', [AssignmentOMController::class, 'index']);
-Route::get('assignment_oms/{id}', [AssignmentOMController::class, 'show']);
-Route::post('assignment_oms', [AssignmentOMController::class, 'store']);
-Route::put('assignment_oms/{id}', [AssignmentOMController::class, 'update']);
-Route::delete('assignment_oms/{id}', [AssignmentOMController::class, 'destroy']);
+Route::post('/assignment_oms', [AssignmentOMController::class, 'store']);
+Route::get('/assignment_oms', [AssignmentOMController::class, 'index']);
+Route::get('/assignment_oms/{id}', [AssignmentOMController::class, 'show']);
+Route::put('/assignment_oms/{id}', [AssignmentOMController::class, 'update']);
+Route::delete('/assignment_oms/{id}', [AssignmentOMController::class, 'destroy']);
 
 
 
@@ -58,27 +63,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-
-// Route::post('/get-user-info', function (Request $request) {
-//     // Récupère l'utilisateur connecté via la session
-//     $user = $request->user(); // Utilise le middleware d'authentification pour récupérer l'utilisateur authentifié
-
-//     if ($user) {
-//         // Si un utilisateur est connecté, retourne son email et son rôle
-//         return response()->json([
-//             'email' => $user->email,
-//             'role' => $user->role,  // Assure-toi que le rôle de l'utilisateur est stocké dans la colonne `role` de la table `users`
-//         ]);
-//     }
-
-//     // Si l'utilisateur n'est pas trouvé ou n'est pas connecté, retourne une erreur
-//     return response()->json(['error' => 'Utilisateur non trouvé'], 404);
-// });
-
-
 Route::post('/check-and-add-user', [UserController::class, 'checkAndAddUser']);
 Route::put('/users/{id}', [UserController::class, 'updateUserById']);
-
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -86,10 +72,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
-
-
-
-
 
 {/* Mission Tdr */}
 Route::get('/create-tdr', [TdrMissionController::class, 'index']);
@@ -120,6 +102,8 @@ Route::delete('/request-in-advances/{id}', [RequestInAdvanceController::class, '
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [RegisterController::class, 'login']);
 Route::get('/users', [RegisterController::class, 'getUsers']);
+Route::delete('/users/{id}', [RegisterController::class, 'getUsers']);
+
 
 Route::middleware('auth:sanctum')->get('/user', [RegisterController::class, 'getUserData']);
 

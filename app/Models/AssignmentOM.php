@@ -27,10 +27,9 @@ class AssignmentOM extends Model
         'date_hotel',
         'other_details_hotel',
         'other_logistical_requirments',
-        'tdr_id',  // ID du TDR lié
+        'tdr_id',  
     ];
 
-    // Relation avec le TDR
     public function tdr()
     {
         return $this->belongsTo(Tdrmission::class);

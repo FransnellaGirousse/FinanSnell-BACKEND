@@ -24,7 +24,6 @@ class UserController extends Controller
         // Vérifier si l'utilisateur existe déjà
         $user = User::where('email', $request->email)->first();
 
-        // Si l'utilisateur n'existe pas, on le crée
         if (!$user) {
             $user = User::create([
                 'email'     => $request->email,
@@ -33,7 +32,6 @@ class UserController extends Controller
             ]);
         }
 
-        // Retourne l'utilisateur
         return response()->json([
             'user' => $user,
         ], 200);
@@ -44,13 +42,12 @@ class UserController extends Controller
      */
     public function getRole(Request $request)
     {
-        $user = $request->user();  // Récupération de l'utilisateur connecté
+        $user = $request->user(); 
 
         if (!$user) {
             return response()->json(['error' => 'Utilisateur non authentifié'], 401);
         }
 
-        // Retourne les rôles de l'utilisateur
         return response()->json([
             'roles' => $user->getRoleNames(),
         ], 200);
@@ -61,23 +58,19 @@ class UserController extends Controller
      */
     public function updateUserById(Request $request, $id)
     {
-        // Validation des données à mettre à jour
         $request->validate([
             'firstname' => 'nullable|string|max:255',
             'lastname'  => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:15',
             'role' => 'sometimes|string|in:user,visitor,administrator,accountant,director',
-            // Ajoutez d'autres règles de validation si nécessaire
         ]);
 
-        // Recherche de l'utilisateur par son identifiant
         $user = User::find($id);
 
         if (!$user) {
             return response()->json(['message' => 'Utilisateur non trouvé'], 404);
         }
 
-        // Mise à jour des informations (en conservant les valeurs existantes si non fournies)
         $user->update([
             'firstname' => $request->firstname ?? $user->firstname,
             'lastname'  => $request->lastname ?? $user->lastname,
@@ -85,7 +78,6 @@ class UserController extends Controller
             'role' => $request->role ?? $user->role,
         ]);
 
-        // Retourne une réponse JSON avec l'utilisateur mis à jour
         return response()->json([
             'message' => 'Utilisateur mis à jour avec succès',
             'user'    => $user,
