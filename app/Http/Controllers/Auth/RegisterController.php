@@ -21,7 +21,7 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:255|unique:users',  
             'password' => 'required|string|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*?&]/',  
             'phone_number' => 'nullable|string|unique:users',  
-            'role' => 'required|string|in:user,visitor,administrator,accountant,director',  
+            'role' => 'required|string|in:user,visitor,administrator,accountant,director,manager',  
         ]);  
 
         if ($validator->fails()) {  
