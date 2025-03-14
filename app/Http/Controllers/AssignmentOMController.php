@@ -44,7 +44,7 @@ class AssignmentOMController extends Controller
         ]);
 
         $assignment = AssignmentOM::create($validated);
-        return response()->json($assignment, 201);
+        return response()->json(['message' => 'AssignmentOM created successfully']);
     }
 
     // Mettre à jour un AssignmentOM existant

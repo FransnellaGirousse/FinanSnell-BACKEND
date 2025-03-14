@@ -19,7 +19,8 @@ class Tdrmission extends Model
         'mission_objectives',
         'planned_activities',
         'necessary_resources',
-        'conclusion'
+        'conclusion',
+        'status'
     ];
     public function assignments()
     {

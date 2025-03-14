@@ -24,6 +24,8 @@ class TdrMissionController extends Controller
             'planned_activities' => 'required|string',
             'necessary_resources' => 'required|string',
             'conclusion' => 'required|string',
+            'status' => 'sometimes|string|in:En attente,Validé,Rejeté', // Permet de modifier le statut
+
         ]);
 
         $mission = Tdrmission::create($validatedData);
@@ -59,6 +61,7 @@ class TdrMissionController extends Controller
             'planned_activities' => 'sometimes|required|string',
             'necessary_resources' => 'sometimes|required|string',
             'conclusion' => 'sometimes|required|string',
+            'status' => 'sometimes|string|in:En attente,Validé,Rejeté', 
         ]);
 
       

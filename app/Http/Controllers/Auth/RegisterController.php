@@ -101,12 +101,11 @@ class RegisterController extends Controller
     // Méthode pour récupérer l'email de l'utilisateur
     public function getEmail(Request $request)
     {
-        $user = $request->user();  // Utilise l'utilisateur authentifié
+        $user = $request->user();  
 
         // Retourne l'email de l'utilisateur
         return response()->json(['email' => $user->email]);
     }
-    // Récupérer tous les utilisateurs
     public function getUsers()
     {
         return response()->json(User::all(), 200);

@@ -22,4 +22,8 @@ class TravelRow extends Model
     {
         return $this->belongsTo(RequestInAdvance::class);
     }
+    public function request()
+    {
+        return $this->belongsTo(Request::class);
+    }
 }

@@ -12,6 +12,25 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AssignmentOMController;
 use App\Http\Controllers\MissionDetailController;
 use App\Http\Controllers\SuperAdminAuthController;
+use App\Http\Controllers\ExpensePersonnalController;
+use App\Http\Controllers\RequestController;
+
+
+
+    Route::get('/requests', [RequestController::class, 'index']); // Obtenir toutes les requêtes
+    Route::post('/requests', [RequestController::class, 'store']); // Créer une nouvelle requête
+    Route::get('/requests/{id}', [RequestController::class, 'show']); // Obtenir une requête spécifique
+    Route::put('/requests/{id}', [RequestController::class, 'update']); // Mettre à jour une requête
+    Route::delete('/requests/{id}', [RequestController::class, 'destroy']); // Supprimer une requête
+
+
+// Route expense personnal
+Route::middleware('api')->group(function () {
+    Route::get('/expenses', [ExpensePersonnalController::class, 'index']);
+    Route::post('/expenses', [ExpensePersonnalController::class, 'store']);
+    Route::put('/expenses/{id}', [ExpensePersonnalController::class, 'update']);
+    Route::delete('/expenses/{id}', [ExpensePersonnalController::class, 'destroy']);
+});
 
 Route::post('/superadmin/login', [SuperAdminAuthController::class, 'login']);
 Route::get('/create-superadmin', [SuperAdminAuthController::class, 'createAdmin']);
@@ -25,6 +44,7 @@ Route::get('/assignment_oms/{id}', [AssignmentOMController::class, 'show']);
 Route::put('/assignment_oms/{id}', [AssignmentOMController::class, 'update']);
 Route::delete('/assignment_oms/{id}', [AssignmentOMController::class, 'destroy']);
 
+Route::apiResource('create_om', AssignmentOMController::class);
 
 
 

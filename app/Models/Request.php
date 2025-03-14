@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RequestInAdvance extends Model
+class Request extends Model
 {
     use HasFactory;
 
@@ -35,7 +35,6 @@ class RequestInAdvance extends Model
         'total_general',
         'final_total',
     ];
-
     public function rows()
     {
         return $this->hasMany(TravelRow::class);
