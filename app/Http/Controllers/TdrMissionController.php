@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Tdrmission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
+use App\Models\User;
+
 
 class TdrMissionController extends Controller
 {
@@ -15,6 +19,7 @@ class TdrMissionController extends Controller
 
     public function store(Request $request)
     {
+ 
         $validatedData = $request->validate([
             'date_tdr' => 'required|date',
             'traveler' => 'required|string|max:255',
@@ -25,12 +30,26 @@ class TdrMissionController extends Controller
             'necessary_resources' => 'required|string',
             'conclusion' => 'required|string',
             'status' => 'sometimes|string|in:En attente,Validé,Rejeté', // Permet de modifier le statut
-
+            'user_id' => 'nullable|integer|exists:users,id'
         ]);
+            // Ne remplacer `user_id` par Auth::id() que s'il est NULL
+        $validatedData['user_id'] = $validatedData['user_id'] ?? Auth::id();
+        $userOffer = User::where('role', 'administrator')->first();
 
         $mission = Tdrmission::create($validatedData);
 
-        return response()->json($mission, 201);
+        // Création de la notification
+        Notification::create([
+        'id_user_request' => $validatedData['user_id'], // L'utilisateur qui crée la mission
+        'type' => 'TDR',
+        'id_user_offer' => $userOffer ? $userOffer->id : null,
+        'date_requested'=> now(),
+        'id_type_request' => $mission->id,
+        'read' => false,
+        'message' => "Une nouvelle mission TDR a été ajoutée : {$mission->mission_title}",
+    ]);
+
+    return response()->json($mission, 201);
     }
 
     public function show($id)
@@ -70,6 +89,27 @@ class TdrMissionController extends Controller
 
         return response()->json($mission, 200);
     }
+
+    public function updateStatus(Request $request, $id)
+{
+    $mission = Tdrmission::find($id);
+
+    if (!$mission) {
+        return response()->json(['message' => 'Mission not found'], 404);
+    }
+
+    $validatedData = $request->validate([
+        'status' => 'required|string|in:En attente,Validé,Rejeté', 
+    ]);
+
+    $mission->update(['status' => $validatedData['status']]);
+
+    return response()->json([
+        'message' => 'Statut mis à jour avec succès',
+        'tdr' => $mission
+    ], 200);
+}
+
 
     public function destroy($id)
     {

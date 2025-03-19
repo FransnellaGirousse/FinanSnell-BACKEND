@@ -32,7 +32,9 @@ class User extends Authenticatable
         'phone_number', 
         'role',
         'google_id',
-        'image'
+        'image',
+        'key_company',
+        'gestion_type'
     ];
 
 

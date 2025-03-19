@@ -32,7 +32,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tdr_id');
             $table->foreign('tdr_id')
                   ->references('id')
-                  ->on('tdrs')
+                  ->on('create_tdr')
                   ->onDelete('cascade');
             $table->timestamps();
         });

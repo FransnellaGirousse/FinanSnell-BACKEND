@@ -24,17 +24,10 @@ class RequestInAdvanceController extends Controller
             'address' => 'required|string',
             'date_need_by' => 'required|date',
             'date_requested' => 'required|date',
-            'special_mailing_instruction' => 'nullable|string',
             'purpose_of_travel' => 'required|string',
             'destination' => 'required|string',
-            'location' => 'required|string',
-            'per_diem_rate' => 'required|string',
-            'daily_rating_coefficient' => 'required|string',
-            'percentage_of_advance_required' => 'required|string',
-            'total_amount' => 'required|string',
             'additional_costs_motif' => 'nullable|string',
             'additional_costs' => 'nullable|string',
-            'total_sum' => 'required|string',
             'amount_requested' => 'required|numeric',
             'bank' => 'required|string',
             'branch' => 'required|string',
@@ -42,7 +35,6 @@ class RequestInAdvanceController extends Controller
             'account_number' => 'required|string',
             'total_general' => 'required|string',
             'final_total' => 'required|string',
-            'number_of_days' => 'required|string',
             'rows' => 'required|array', 
             'rows.*.location' => 'required|string',
             'rows.*.per_diem_rate' => 'required|string',
@@ -60,9 +52,14 @@ class RequestInAdvanceController extends Controller
         }
 
         return response()->json([
-            'message' => 'Request in advance created successfully!',
+            'message' => 'Votre demande a bien été envoyer !',
             'data' => $requestInAdvance->load('rows'),
         ], 201);
+
+        return response()->json([
+            'message' => 'Failed to create request in advance.',
+            'errors' => $errors, // ou toute autre information sur l'erreur
+        ], 400);
     }
 
    
@@ -86,17 +83,10 @@ class RequestInAdvanceController extends Controller
             'address' => 'required|string',
             'date_need_by' => 'required|date',
             'date_requested' => 'required|date',
-            'special_mailing_instruction' => 'nullable|string',
             'purpose_of_travel' => 'required|string',
             'destination' => 'required|string',
-            'location' => 'required|string',
-            'per_diem_rate' => 'required|string',
-            'daily_rating_coefficient' => 'required|string',
-            'percentage_of_advance_required' => 'required|string',
-            'total_amount' => 'required|string',
             'additional_costs_motif' => 'nullable|string',
             'additional_costs' => 'nullable|string',
-            'total_sum' => 'required|string',
             'amount_requested' => 'required|numeric',
             'bank' => 'required|string',
             'branch' => 'required|string',
@@ -104,7 +94,6 @@ class RequestInAdvanceController extends Controller
             'account_number' => 'required|string',
             'total_general' => 'required|string',
             'final_total' => 'required|string',
-            'number_of_days' => 'required|string',
             'rows' => 'required|array', 
             'rows.*.location' => 'required|string',
             'rows.*.per_diem_rate' => 'required|string',

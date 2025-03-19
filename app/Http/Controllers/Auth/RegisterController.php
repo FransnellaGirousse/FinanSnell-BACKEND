@@ -7,7 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;  
 use Illuminate\Support\Facades\Hash;  
 use Illuminate\Support\Facades\Validator; 
-
+use App\Models\Company;
+use App\Models\Role;
 
 class RegisterController extends Controller  
 {  
@@ -19,9 +20,10 @@ class RegisterController extends Controller
             'firstname' => 'required|string|max:255',  
             'lastname' => 'required|string|max:255',  
             'email' => 'required|string|email|max:255|unique:users',  
-            'password' => 'required|string|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*?&]/',  
+            'password' => 'required|string|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*?&-_]/',  
             'phone_number' => 'nullable|string|unique:users',  
-            'role' => 'required|string|in:user,visitor,administrator,accountant,director,manager',  
+            'gestion_type' => 'required|string|in:personnel,entreprise',  
+            'key_company' => 'nullable|string|exists:companies,key',
         ]);  
 
         if ($validator->fails()) {  
@@ -31,6 +33,102 @@ class RegisterController extends Controller
             ], 200);  
         }  
 
+        // 🔹 Cas où `gestion_type` est `personnel`
+if ($request->gestion_type === 'personnel') {
+    $user = User::create([
+        'firstname' => $request->firstname,
+        'lastname' => $request->lastname,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'phone_number' => $request->phone_number,
+        'role' => 'visitor', // 🔥 Assignation du rôle "visitor"
+        'gestion_type' => 'personnel',
+        'company_id' => null
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Utilisateur personnel créé avec succès',
+        'user' => $user,
+    ], 201);
+}
+
+
+
+
+         // 🔹 Cas où `gestion_type` est `entreprise`
+        if ($request->gestion_type === 'entreprise') {
+            // Vérifier si la clé `key_company` est bien fournie
+            if (!$request->filled('key_company')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le champ key_company est requis pour les utilisateurs de type entreprise.'
+                ], 400);
+            }
+
+            // Vérifier si l'entreprise existe via `key_company`
+            $company = Company::where('key', $request->key_company)->first();
+            if (!$company) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Aucune entreprise trouvée avec la clé fournie.'
+                ], 404);
+            }
+
+            // Vérifier si le rôle existe et correspond bien à `id_companies`
+            if (!$request->filled('key_role')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le champ key_role est requis pour les utilisateurs de type entreprise.'
+                ], 400);
+            }
+
+
+
+          // Vérifier si la clé d'entreprise est fournie et valide
+    $company = null;
+    if ($request->key_company) {
+        $company = Company::where('key', $request->key_company)->first();
+
+        if (!$company) {
+            return response()->json([
+                'success' => false,
+                'message' => "Aucune entreprise trouvée avec la clé fournie.",
+            ], 404);
+        }
+    }
+
+      // 🔹 Vérifier si le rôle existe et correspond bien à l'entreprise
+        $role = Role::where('key', $request->key_role)
+                    ->where('id_companies', $company->id) // Vérifie si l'id correspond
+                    ->first();
+
+    if (!$role) {
+        return response()->json([
+            'success' => false,
+            'message' => "Aucun rôle trouvé pour cette entreprise.",
+        ], 404);
+    }
+
+
+         // Vérification conditionnelle de key_company
+        if ($request->gestion_type === 'entreprise') {
+            if (!$request->filled('key_company')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le champ key_company est requis pour les utilisateurs de type entreprise.'
+                ], 400);
+            }
+
+            $companyExists = Company::where('key', $request->key_company)->exists();
+            if (!$companyExists) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'La clé company fournie est invalide. Aucun enregistrement trouvé dans la base de données.'
+                ], 400);
+            }
+        }
+
         // Création de l'utilisateur avec le rôle
         $user = User::create([  
             'firstname' => $request->firstname, 
@@ -38,7 +136,10 @@ class RegisterController extends Controller
             'email' => $request->email,  
             'password' => Hash::make($request->password),  
             'phone_number' => $request->phone_number,  
-            'role' => $request->role,  
+            'role' => $role->name,
+            'key_company' => $request->key_company,
+            'gestion_type' => 'entreprise',
+            'company_id' => $company ? $company->id : null
         ]);  
 
         // Retourner une réponse avec les données de l'utilisateur
@@ -48,6 +149,7 @@ class RegisterController extends Controller
             'user' => $user,  
         ], 201);  
     } 
+}
 
     // Méthode de connexion de l'utilisateur
     public function login(Request $request)

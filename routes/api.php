@@ -14,8 +14,21 @@ use App\Http\Controllers\MissionDetailController;
 use App\Http\Controllers\SuperAdminAuthController;
 use App\Http\Controllers\ExpensePersonnalController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\CompanyController;
 
 
+
+    {/* Api Entreprise */}
+    Route::apiResource('companies', CompanyController::class);
+
+
+    {/* Api Notifications*/}
+    Route::post('/notifications', [NotificationController::class, 'store']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/{id}', [NotificationController::class, 'show']);
+    Route::put('/notifications/{id}', [NotificationController::class, 'update']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 
     Route::get('/requests', [RequestController::class, 'index']); // Obtenir toutes les requêtes
     Route::post('/requests', [RequestController::class, 'store']); // Créer une nouvelle requête
@@ -99,6 +112,8 @@ Route::get('/create-tdr/{id}', [TdrMissionController::class, 'show']);
 Route::post('/create-tdr', [TdrMissionController::class, 'store']);
 Route::put('/create-tdr/{id}', [TdrMissionController::class, 'update']);
 Route::delete('/create-tdr/{id}', [TdrMissionController::class, 'destroy']);
+Route::put('/tdr/update-status/{id}', [TdrMissionController::class, 'updateStatus']);
+
 
 
 {/*Mission Report */}

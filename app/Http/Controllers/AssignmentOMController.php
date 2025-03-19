@@ -21,33 +21,41 @@ class AssignmentOMController extends Controller
         return response()->json($assignment);
     }
 
-    // Créer un nouveau AssignmentOM
-    public function store(Request $request)
-    {
+   public function store(Request $request)
+{
         $validated = $request->validate([
             'date' => 'required|date',
             'traveler' => 'required|string',
             'purpose_of_the_mission' => 'required|string',
-            'date_hour' => 'required|date_format:Y-m-d H:i:s',
-            'starting_point' => 'required|string',
-            'destination' => 'required|string',
-            'authorization_airfare' => 'required|string',
-            'fund_speedkey' => 'required|string',
-            'price' => 'required|string',
             'name_of_the_hotel' => 'required|string',
             'room_rate' => 'required|string',
             'confirmation_number' => 'required|integer',
             'date_hotel' => 'required|date',
             'other_details_hotel' => 'nullable|string',
             'other_logistical_requirments' => 'nullable|string',
-            'tdr_id' => 'required|exists:tdrs,id',
+            'rows' => 'required|array',
+            'rows.*.date_hour' => 'required|date_format:Y-m-d H:i:s',
+            'rows.*.starting_point' => 'required|string',
+            'rows.*.destination' => 'required|string',
+            'rows.*.authorization_airfare' => 'required|string',
+            'rows.*.fund_speedkey' => 'required|string',
+            'rows.*.price' => 'required|string',
         ]);
 
         $assignment = AssignmentOM::create($validated);
-        return response()->json(['message' => 'AssignmentOM created successfully']);
-    }
+         // Créer les lignes de la demande
+        foreach ($request->rows as $row) {
+            $assignment->rows()->create($row);
+        }
 
-    // Mettre à jour un AssignmentOM existant
+        return response()->json(['message' => 'AssignmentOM créé avec succès' ,
+        'data' => $assignment->load('rows'),],
+         201);
+    
+}
+
+
+
     public function update(Request $request, $id)
     {
         $assignment = AssignmentOM::findOrFail($id);
@@ -56,34 +64,30 @@ class AssignmentOMController extends Controller
             'date' => 'required|date',
             'traveler' => 'required|string',
             'purpose_of_the_mission' => 'required|string',
-            'date_hour' => 'required|date_format:Y-m-d H:i:s',
-            'starting_point' => 'required|string',
-            'destination' => 'required|string',
-            'authorization_airfare' => 'required|string',
-            'fund_speedkey' => 'required|string',
-            'price' => 'required|string',
             'name_of_the_hotel' => 'required|string',
             'room_rate' => 'required|string',
             'confirmation_number' => 'required|integer',
             'date_hotel' => 'required|date',
             'other_details_hotel' => 'nullable|string',
             'other_logistical_requirments' => 'nullable|string',
-            'tdr_id' => 'required|exists:tdrs,id',
+            'rows' => 'required|array',
+            'rows.*.date_hour' => 'required|date_format:Y-m-d H:i:s',
+            'rows.*.starting_point' => 'required|string',
+            'rows.*.destination' => 'required|string',
+            'rows.*.authorization_airfare' => 'required|string',
+            'rows.*.fund_speedkey' => 'required|string',
+            'rows.*.price' => 'required|string',
         ]);
 
         $assignment->update($validated);
         return response()->json($assignment);
     }
 
-    // Supprimer un AssignmentOM
     public function destroy($id)
     {
         $assignment = AssignmentOM::findOrFail($id);
         $assignment->delete();
         return response()->json(['message' => 'AssignmentOM deleted successfully']);
     }
-
-
-
 }
 

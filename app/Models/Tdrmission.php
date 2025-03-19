@@ -20,8 +20,15 @@ class Tdrmission extends Model
         'planned_activities',
         'necessary_resources',
         'conclusion',
-        'status'
+        'status',
+        'user_id',
     ];
+
+    //  public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
+
     public function assignments()
     {
         return $this->hasMany(AssignmentOM::class);
