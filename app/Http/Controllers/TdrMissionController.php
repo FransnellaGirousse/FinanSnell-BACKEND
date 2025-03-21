@@ -29,12 +29,16 @@ class TdrMissionController extends Controller
             'planned_activities' => 'required|string',
             'necessary_resources' => 'required|string',
             'conclusion' => 'required|string',
-            'status' => 'sometimes|string|in:En attente,Validé,Rejeté', // Permet de modifier le statut
-            'user_id' => 'nullable|integer|exists:users,id'
+            'status' => 'sometimes|string|in:En attente,Validé,Rejeté',
+            'user_id' => 'nullable|integer|exists:users,id',
+             'key_company' => 'nullable|string',
         ]);
             // Ne remplacer `user_id` par Auth::id() que s'il est NULL
         $validatedData['user_id'] = $validatedData['user_id'] ?? Auth::id();
-        $userOffer = User::where('role', 'administrator')->first();
+        $userOffer = User::where('role', 'administrator')
+            ->join('create_tdr', 'users.key_company', '=', 'create_tdr.key_company')
+            ->select('users.id') // Sélectionnez les colonnes que vous souhaitez
+            ->first();
 
         $mission = Tdrmission::create($validatedData);
 
@@ -81,6 +85,7 @@ class TdrMissionController extends Controller
             'necessary_resources' => 'sometimes|required|string',
             'conclusion' => 'sometimes|required|string',
             'status' => 'sometimes|string|in:En attente,Validé,Rejeté', 
+             'key_company' => 'nullable|string',
         ]);
 
       
@@ -125,7 +130,51 @@ class TdrMissionController extends Controller
     }
 
     
+   public function approveMission($id)
+{
+    $mission = Tdrmission::find($id);
 
-    
+    if (!$mission) {
+        return response()->json(['message' => 'Mission non trouvée'], 404);
+    }
+
+    // Mettre à jour le statut en "Validé"
+    $mission->status = 'Validé';
+    $mission->save();
+
+    // Ajouter une notification ou toute autre logique si nécessaire
+
+    return response()->json([
+        'message' => 'Mission approuvée avec succès',
+        'mission' => $mission
+    ], 200);
+}
+
+public function approvedMissions()
+{
+    $missions = Tdrmission::where('status', 'Validé')->get();
+
+    return response()->json([
+        'message' => 'Liste des missions approuvées',
+        'missions' => $missions
+    ], 200);
+}
+
+public function getMissionWithApprovalStatus($id)
+{
+    $mission = Tdrmission::find($id);
+
+    if (!$mission) {
+        return response()->json(['message' => 'Mission non trouvée'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Mission récupérée avec succès',
+        'mission' => $mission
+    ], 200);
+}
+
+
+
 }
 

@@ -27,6 +27,7 @@ class NotificationController extends Controller
             'read' => 'boolean',
             'type' => 'required|string',
             'id_type_request' => 'required|integer',
+            'explorer' => 'boolean',
         ]);
 
         Notification::create($request->all());
@@ -52,6 +53,7 @@ class NotificationController extends Controller
             'read' => 'boolean',
             'type' => 'required|string',
             'id_type_request' => 'required|integer',
+            'explorer' => 'boolean',
         ]);
 
         $notification->update($request->all());
@@ -62,5 +64,25 @@ class NotificationController extends Controller
     {
         $notification->delete();
         return redirect()->route('notifications.index')->with('success', 'Notification deleted successfully.');
+    }
+
+    public function getNotificationsByUserOffer($userId)
+    {
+        $notifications = Notification::where('id_user_offer', $userId)->get();
+        return response()->json($notifications);
+    }
+
+    public function countUnreadNotifications($userId)
+    {
+        $count = Notification::where('id_user_offer', $userId)
+                            ->where('read', false)
+                            ->count();
+
+        return response()->json(['count' => $count], 200);
+    }
+    public function markAsRead($userId)
+    {
+        $notifications = Notification::where('id_user_offer', $userId)->update(['read' => true]);
+        return response()->json(['message' => 'Notifications marked as read'], 200);
     }
 }

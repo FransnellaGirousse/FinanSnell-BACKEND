@@ -16,14 +16,20 @@ use App\Http\Controllers\ExpensePersonnalController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\MissionController;
+
+Route::apiResource('missions', MissionController::class);
 
 
 
-    {/* Api Entreprise */}
+{/* Api Entreprise */}
     Route::apiResource('companies', CompanyController::class);
 
 
     {/* Api Notifications*/}
+    Route::put('/notifications/mark-as-read/{userId}', [NotificationController::class, 'markAsRead']);
+    Route::get('/notifications/unread-count/{userId}', [NotificationController::class, 'countUnreadNotifications']);
+    Route::get('/notifications/user-offer/{userId}', [NotificationController::class, 'getNotificationsByUserOffer']);
     Route::post('/notifications', [NotificationController::class, 'store']);
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::get('/notifications/{id}', [NotificationController::class, 'show']);
@@ -51,11 +57,11 @@ Route::middleware('auth:sanctum')->post('/superadmin/logout', [SuperAdminAuthCon
 
 
 
-Route::post('/assignment_oms', [AssignmentOMController::class, 'store']);
-Route::get('/assignment_oms', [AssignmentOMController::class, 'index']);
-Route::get('/assignment_oms/{id}', [AssignmentOMController::class, 'show']);
-Route::put('/assignment_oms/{id}', [AssignmentOMController::class, 'update']);
-Route::delete('/assignment_oms/{id}', [AssignmentOMController::class, 'destroy']);
+// Route::post('/assignment_oms', [AssignmentOMController::class, 'store']);
+// Route::get('/assignment_oms', [AssignmentOMController::class, 'index']);
+// Route::get('/assignment_oms/{id}', [AssignmentOMController::class, 'show']);
+// Route::put('/assignment_oms/{id}', [AssignmentOMController::class, 'update']);
+// Route::delete('/assignment_oms/{id}', [AssignmentOMController::class, 'destroy']);
 
 Route::apiResource('create_om', AssignmentOMController::class);
 
@@ -69,14 +75,14 @@ Route::post('/test-google-callback', [\App\Http\Controllers\AuthController::clas
 
 
 
-// {/* Mission OM */}
-// Route::prefix('assignment-oms')->group(function () {
-//     Route::get('/', [AssignmentOMController::class, 'index']); // Afficher toutes les missions
-//     Route::get('{id}', [AssignmentOMController::class, 'show']); // Afficher une mission spécifique
-//     Route::post('/', [AssignmentOMController::class, 'store']); // Créer une nouvelle mission
-//     Route::put('{id}', [AssignmentOMController::class, 'update']); // Mettre à jour une mission
-//     Route::delete('{id}', [AssignmentOMController::class, 'destroy']); // Supprimer une mission
-// });
+{/* Mission OM */}
+Route::prefix('assignment-oms')->group(function () {
+    Route::get('/', [AssignmentOMController::class, 'index']); // Afficher toutes les missions
+    Route::get('{id}', [AssignmentOMController::class, 'show']); // Afficher une mission spécifique
+    Route::post('/', [AssignmentOMController::class, 'store']); // Créer une nouvelle mission
+    Route::put('{id}', [AssignmentOMController::class, 'update']); // Mettre à jour une mission
+    Route::delete('{id}', [AssignmentOMController::class, 'destroy']); // Supprimer une mission
+});
 
 
 {/* Mission OM tableau */}
@@ -95,9 +101,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+{/** Users reccuperation */}
 Route::post('/check-and-add-user', [UserController::class, 'checkAndAddUser']);
 Route::put('/users/{id}', [UserController::class, 'updateUserById']);
+Route::get('/users/{id}', [UserController::class, 'getUser']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -107,6 +114,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 
 {/* Mission Tdr */}
+Route::get('/approvalmission/{id}', [TdrMissionController::class, 'getMissionWithApprovalStatus']);
+Route::put('/approvalmission/{id}', [TdrMissionController::class, 'approveMission']);
+Route::get('/approvalmission', [TdrMissionController::class, 'approvedMissions']);
 Route::get('/create-tdr', [TdrMissionController::class, 'index']);
 Route::get('/create-tdr/{id}', [TdrMissionController::class, 'show']);
 Route::post('/create-tdr', [TdrMissionController::class, 'store']);

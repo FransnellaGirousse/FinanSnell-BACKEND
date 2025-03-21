@@ -83,4 +83,21 @@ class UserController extends Controller
             'user'    => $user,
         ], 200);
     }
+
+        /**
+     * Récupère un utilisateur par son ID.
+     */
+    public function getUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        return response()->json([
+            'user' => $user,
+        ], 200);
+    }
+
 }

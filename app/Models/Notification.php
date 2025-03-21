@@ -15,6 +15,7 @@ class Notification extends Model
         'read',
         'type',
         'id_type_request',
+        'explorer'
     ];
 
 }

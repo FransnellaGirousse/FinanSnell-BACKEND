@@ -22,6 +22,7 @@ class Tdrmission extends Model
         'conclusion',
         'status',
         'user_id',
+        'key_company'
     ];
 
     //  public function user()
