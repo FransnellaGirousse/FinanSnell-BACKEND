@@ -10,6 +10,7 @@ class RequestInAdvance extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'social_security_number',
         'nationality',
         'address',
@@ -26,6 +27,9 @@ class RequestInAdvance extends Model
         'account_number',
         'total_general',
         'final_total',
+        'key_company',
+        'tdr_id',
+        'status'
     ];
 
     public function rows()

@@ -31,7 +31,7 @@ class TdrMissionController extends Controller
             'conclusion' => 'required|string',
             'status' => 'sometimes|string|in:En attente,Validé,Rejeté',
             'user_id' => 'nullable|integer|exists:users,id',
-             'key_company' => 'nullable|string',
+            'key_company' => 'nullable|string',
         ]);
             // Ne remplacer `user_id` par Auth::id() que s'il est NULL
         $validatedData['user_id'] = $validatedData['user_id'] ?? Auth::id();
@@ -172,6 +172,62 @@ public function getMissionWithApprovalStatus($id)
         'message' => 'Mission récupérée avec succès',
         'mission' => $mission
     ], 200);
+}
+
+public function getCompanies()
+{
+    // Récupère toutes les entreprises basées sur la relation 'key_company' dans la table 'create_tdr'
+    $companies = User::whereNotNull('key_company') // Filtrer par 'key_company' non null
+        ->distinct('key_company') // Pour récupérer des valeurs uniques de 'key_company'
+        ->get(['key_company']);
+
+    return response()->json($companies, 200);
+}
+
+public function getMissionsForAuthenticatedUser()
+{
+    // Récupérer l'utilisateur connecté
+    $user = Auth::user();
+
+    // Vérifier si l'utilisateur est connecté et s'il a un key_company
+    if (!$user || !$user->key_company) {
+        return response()->json(['message' => 'Utilisateur non connecté ou sans key_company'], 400);
+    }
+
+    // Récupérer le key_company de l'utilisateur
+    $keyCompany = $user->key_company;
+
+    // Récupérer les missions associées à ce key_company
+    $missions = Tdrmission::where('key_company', $keyCompany)
+        ->select('id', 'title')  // Sélectionner l'ID et le titre des missions
+        ->get();
+
+    // Vérifier si des missions ont été trouvées
+    if ($missions->isEmpty()) {
+        return response()->json(['message' => 'Aucune mission trouvée pour ce key_company'], 404);
+    }
+
+    // Retourner le key_company et les missions associées
+    return response()->json([
+        'keyCompany' => $keyCompany,
+        'missions' => $missions
+    ]);
+}
+
+// Dans TdrMissionController
+
+public function getTdrIdsByKeyCompany($keyCompany)
+{
+    // Récupérer tous les IDs des missions pour un key_company donné
+    $missions = Tdrmission::where('key_company', $keyCompany)
+        ->get(['id', 'mission_title']);  // On récupère uniquement l'ID des missions
+
+    // Vérifier si des missions sont trouvées pour ce key_company
+    if ($missions->isEmpty()) {
+        return response()->json(['message' => 'Aucune mission trouvée pour ce key_company'], 404);
+    }
+
+    return response()->json($missions, 200);  // Retourner les IDs des missions
 }
 
 

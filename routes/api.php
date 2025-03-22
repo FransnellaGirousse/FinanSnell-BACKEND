@@ -17,10 +17,23 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\MissionController;
+use App\Http\Controllers\SupportingController;
 
-Route::apiResource('missions', MissionController::class);
+Route::get('/get-companies', [TdrMissionController::class, 'getCompanies']);
+Route::get('/get-tdr-ids-by-key-company/{keyCompany}', [TdrMissionController::class, 'getTdrIdsByKeyCompany']);
+Route::get('/user/mission-list', [TdrMissionController::class, 'getMissionsForAuthenticatedUser']);
 
 
+Route::prefix('supportings')->group(function () {
+    Route::get('/', [SupportingController::class, 'index']);
+    Route::post('/', [SupportingController::class, 'store']);
+    Route::get('/{supporting}', [SupportingController::class, 'show']);
+    Route::get('/{supporting}/download', [SupportingController::class, 'download']);
+});
+
+
+{/* Api Mission create OM */}
+    Route::apiResource('missions', MissionController::class);
 
 {/* Api Entreprise */}
     Route::apiResource('companies', CompanyController::class);
@@ -135,6 +148,10 @@ Route::delete('/mission-report/{id}', [MissionReportController::class, 'destroy'
 
 
 {/* Request in advance*/}
+Route::put('request-in-advance/update-status/{id}', [RequestInAdvanceController::class, 'updateStatus']);
+Route::put('request-in-advance/{id}/update-status', [RequestInAdvanceController::class, 'updateStatus']);
+Route::put('/request-in-advance/{id}/approval', [RequestInAdvanceController::class, 'approvaladvance']);
+Route::get('/approvaladvance/{id}', [RequestInAdvanceController::class, 'getRequestWithApprovalStatus']);
 Route::post('/request-in-advances', [RequestInAdvanceController::class, 'store']);
 Route::get('/request-in-advances', [RequestInAdvanceController::class, 'index']);       
 Route::get('/request-in-advances/{id}', [RequestInAdvanceController::class, 'show']);   
