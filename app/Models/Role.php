@@ -18,4 +18,13 @@ class Role extends Model
     {
         return $this->belongsTo(Company::class, 'id_companies');
     }
+
+     public function users()
+{
+    return $this->belongsToMany(User::class);
 }
+
+
+
+}
+

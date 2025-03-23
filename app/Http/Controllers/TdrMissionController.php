@@ -108,6 +108,18 @@ class TdrMissionController extends Controller
     ]);
 
     $mission->update(['status' => $validatedData['status']]);
+    $notification = Notification::where('id_type_request', $id)
+                             ->where('type', 'TDR')
+                             ->first();
+    Notification::create([
+        'id_user_request' => $notification->id_user_offer, // L'utilisateur qui crée la mission
+        'type' => 'TDR_RESPONSE',
+        'id_user_offer' => $notification->id_user_request,
+        'date_requested'=> now(),
+        'id_type_request' => $mission->id,
+        'read' => false,
+        'message' => "Une nouvelle mission TDR a été ajoutée : {$mission->mission_title}",
+    ]);
 
     return response()->json([
         'message' => 'Statut mis à jour avec succès',

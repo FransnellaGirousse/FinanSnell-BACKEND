@@ -53,7 +53,6 @@ class RequestInAdvanceController extends Controller
     ]);
 
     // Utilisateur courant si user_id non fourni
-    $validated['user_id'] = $validated['user_id'] ?? Auth::id();
 
     // Cherche l'utilisateur à notifier
     $userOffer = User::where('role', 'accountant')
@@ -69,7 +68,7 @@ class RequestInAdvanceController extends Controller
         $requestInAdvance->rows()->create($row);
     }
 
-   if ($userOffer) {
+   try {
     Notification::create([
         'id_user_request' => $validated['user_id'],
         'type' => 'REQUEST_IN_ADVANCE',
@@ -79,10 +78,10 @@ class RequestInAdvanceController extends Controller
         'read' => false,
         'message' => "Une nouvelle demande d'avance a été ajoutée : {$requestInAdvance->purpose_of_travel}",
     ]);
-} else {
-    // Optionnel : tu peux logguer ou notifier que l'utilisateur destinataire est introuvable
-    Log::warning("Aucun accountant trouvé pour key_company : {$validated['key_company']}");
+} catch (\Exception $e) {
+    Log::error("Erreur lors de la création de la notification: " . $e->getMessage());
 }
+
 
 
     return response()->json([
@@ -254,8 +253,4 @@ public function updateStatus(Request $request, $id)
         return response()->json(['message' => 'Demande non trouvée'], 404);
     }
 }
-
-
-
-
 }

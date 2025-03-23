@@ -19,6 +19,11 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\MissionController;
 use App\Http\Controllers\SupportingController;
 
+
+Route::post('/check-user-role', [UserController::class, 'checkUserRoleByCompany']);
+Route::post('/verify-user-role', [UserController::class, 'verifyUserRole']);
+
+
 Route::get('/get-companies', [TdrMissionController::class, 'getCompanies']);
 Route::get('/get-tdr-ids-by-key-company/{keyCompany}', [TdrMissionController::class, 'getTdrIdsByKeyCompany']);
 Route::get('/user/mission-list', [TdrMissionController::class, 'getMissionsForAuthenticatedUser']);

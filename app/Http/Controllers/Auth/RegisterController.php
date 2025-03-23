@@ -99,8 +99,8 @@ if ($request->gestion_type === 'personnel') {
     }
 
       // 🔹 Vérifier si le rôle existe et correspond bien à l'entreprise
-        $role = Role::where('key', $request->key_role)
-                    ->where('id_companies', $company->id) // Vérifie si l'id correspond
+    $role = Role::where('key', $request->key_role)
+                    ->where('id_companies', $company->id)
                     ->first();
 
     if (!$role) {

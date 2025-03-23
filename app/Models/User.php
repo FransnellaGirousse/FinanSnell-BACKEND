@@ -39,6 +39,7 @@ class User extends Authenticatable
 
 
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -119,5 +120,11 @@ class User extends Authenticatable
 
     // Suite de votre logique d'authentification (générer un token, rediriger, etc.)
 }
+public function roles()
+{
+    return $this->belongsToMany(Role::class);
+}
+
+
 
 }
